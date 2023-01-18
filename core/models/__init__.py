@@ -1,5 +1,5 @@
 from ..loader import db
-from Service import Service
+from .Service import Service
 import sys
 
 try:
