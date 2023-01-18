@@ -1,5 +1,5 @@
-from loader import *
-from routes.ServiceRegistryBlueprint import serviceRegistryBlueprint
+from core.loader import *
+from core.routes.ServiceRegistryBlueprint import serviceRegistryBlueprint
 
 app.register_blueprint(serviceRegistryBlueprint, url_prefix="/registry")
 
