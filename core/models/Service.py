@@ -18,8 +18,8 @@ class Service(db.Model):
         result = {
             "name": self.name,
             "url": self.url,
-            "last_heartbeat": self.last_heartbeat,
-            "created_time": self.created_time, 
-            "updated_time": self.updated_time
+            "last_heartbeat": self.last_heartbeat.isoformat(),
+            "created_time": self.created_time.isoformat(), 
+            "updated_time": self.updated_time.isoformat()
         }
         return result
