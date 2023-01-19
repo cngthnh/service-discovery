@@ -1,9 +1,11 @@
 from ..loader import *
-from ..models.Service import Service
+from ..models.Service import Service, ServiceStatus
 from flask import request, jsonify
 from datetime import datetime
 import json
 from sqlalchemy import exc
+import requests
+from datetime import timedelta
 
 def register():
     _last_heartbeat = datetime.utcnow()
@@ -13,10 +15,24 @@ def register():
         _url = str(data["url"])
     except Exception:
         return jsonify(message="Invalid data"), 400
+
+    _status = None
+    # ping back
+    response = requests.get(_url)
+    if response.ok:
+        _status = ServiceStatus.HEALTHY.value
+        _latency = int(response.elapsed / timedelta(milliseconds=1))
+    else:
+        _status = ServiceStatus.SERVICE_DOWN.value
+        _latency = -1
     
     service = db.session.query(Service).filter_by(name = _name, url = _url).first()
     if (service is None):
-        service = Service(_name, _url, _last_heartbeat)
+        service = Service(_name, _url)
+
+    service.last_heartbeat = _last_heartbeat
+    service.status = _status
+    service.latency = _latency
     try:
         db.session.add(service)
         db.session.commit()
