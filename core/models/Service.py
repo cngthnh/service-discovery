@@ -8,6 +8,9 @@ class ServiceStatus(Enum):
     SUSPENDED = 3
     WATCHER_DOWN = 4
 
+SUSPENDED_SERVICE_THRESHOLD = 10 # minutes
+DEAD_SERVICE_THRESHOLD = 180 # minutes
+
 class Service(db.Model):
     __tablename__ = 'service'
     name = db.Column(db.UnicodeText, primary_key = True)

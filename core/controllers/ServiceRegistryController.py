@@ -18,14 +18,18 @@ def register():
 
     _status = None
     # ping back
-    response = requests.get(_url)
-    if response.ok:
-        _status = ServiceStatus.HEALTHY.value
-        _latency = int(response.elapsed / timedelta(milliseconds=1))
-    else:
-        _status = ServiceStatus.SERVICE_DOWN.value
-        _latency = -1
-    
+    try: 
+        response = requests.get(_url)
+        if response.ok:
+            _status = ServiceStatus.HEALTHY.value
+            _latency = int(response.elapsed / timedelta(milliseconds=1))
+        else:
+            _status = ServiceStatus.SERVICE_DOWN.value
+            _latency = -1
+    except Exception as e:
+        print(e)
+        return jsonify(message="Invalid URL"), 400
+
     service = db.session.query(Service).filter_by(name = _name, url = _url).first()
     if (service is None):
         service = Service(_name, _url)
@@ -42,9 +46,14 @@ def register():
     return "Registered", 201
 
 def getServices():
-    allServices = db.session.query(Service).all()
-    result = []
+    allServices = db.session.query(Service).order_by(Service.last_heartbeat.desc(), Service.status).all()
+    serviceDict = []
     for service in allServices:
-        result.append(service.toDict())
+        serviceDict.append(service.toDict())
+    result = {
+        "result": "OK",
+        "count": len(serviceDict),
+        "services": serviceDict
+    }
     
     return json.dumps(result), 200

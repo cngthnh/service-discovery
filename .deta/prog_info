@@ -1,0 +1,1 @@
+{"id":"6d6f6b5a-fa35-44fa-8e0c-f27b798b0729","space":48958,"runtime":"python3.9","name":"service-discovery","path":"e1x4x6","project":"c0t28i92","account":"144798365827","region":"ap-southeast-1","deps":["psycopg2-binary","requests","flask==2.2.2","flask-sqlalchemy==3.0.2"],"envs":["DATABASE_URL"],"public":true,"log_level":"debug","cron":"10 minutes"}
